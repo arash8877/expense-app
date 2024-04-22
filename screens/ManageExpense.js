@@ -1,9 +1,9 @@
 import { View, Text } from "react-native";
 
-const manageExpense = () => {
+const ManageExpense = () => {
   return (
-    <text>Manage Expense screen</text>
+    <Text>Manage Expense screen</Text>
   )
 }
 
-export default manageExpense;
+export default ManageExpense;

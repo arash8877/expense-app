@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 
 const AllExpenses = () => {
   return (
-    <text>All Expenses screen</text>
+    <Text>All Expenses screen</Text>
   )
 }
 

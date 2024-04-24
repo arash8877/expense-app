@@ -30,6 +30,12 @@ const DUMMY_EXPENSES = [
     amount: 41.99,
     date: new Date("2024-01-15"),
   },
+  {
+    id: "e6",
+    description: "computer",
+    amount: 12.199,
+    date: new Date("2024-04-20"),
+  },
 ];
 
 export const ExpensesContext = createContext({

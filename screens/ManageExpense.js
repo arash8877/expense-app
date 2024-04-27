@@ -15,7 +15,6 @@ const ManageExpense = ({ route, navigation }) => {
     (expense) => expense.id === editedExpenseId
   );
 
-  console.log(selectedExpense)
 
 
   useLayoutEffect(() => {

@@ -19,7 +19,7 @@ const ExpenseForm = ({ onCancel, onSubmit, submitButtonLabel, defaultValues }) =
     });
   };
 
-  console.log(defaultValues)
+ 
 
   const submitHandler = () => {
     const expenseData = {
@@ -66,7 +66,7 @@ const ExpenseForm = ({ onCancel, onSubmit, submitButtonLabel, defaultValues }) =
         <Button mode="flat" onPress={onCancel} style={styles.button}>
           Cancel
         </Button>
-        <Button onPress={onSubmit} style={styles.button}>
+        <Button onPress={submitHandler} style={styles.button}>
           {submitButtonLabel}
         </Button>
       </View>

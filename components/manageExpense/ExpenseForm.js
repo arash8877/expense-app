@@ -6,13 +6,13 @@ import Button from "../ui/Button";
 const ExpenseForm = ({ onCancel, onSubmit, submitButtonLabel, defaultValues }) => {
   const [input, setInput] = useState({
     amount: {value: defaultValues ? defaultValues.amount.toString() : '',
-    isValid: !!defaultValues,
+    isValid: true,
   },
     date: {value: defaultValues ? defaultValues.date.toISOString().slice(0, 10) : '',
-    isValid: defaultValues ? true : false,
+    isValid: true,
   },
     description: {value: defaultValues? defaultValues.description : '',
-    isValid: defaultValues ? true : false
+    isValid: true,
   } ,
   });
 
@@ -37,11 +37,22 @@ const ExpenseForm = ({ onCancel, onSubmit, submitButtonLabel, defaultValues }) =
 
     if (!isAmountValid || !isDateValid || !isDescriptionValid) {
       // Alert.alert('Invalid Input', 'Please check your input values!');
+      //return;
+      setInput((currentInputs)=> {
+        return {
+          amount: {value: currentInputs.amount.value, isValid: isAmountValid},
+          date: {value: currentInputs.date.value, isValid: isDateValid},
+          description: {value: currentInputs.description.value, isValid: isDescriptionValid}
+        }
+      })
+
       return;
     }
 
     onSubmit(expenseData);
   };
+
+  const isFormValid = !input.amount.isValid || !input.amount.isValid || !input.amount.isValid;
 
 
   return (
@@ -76,6 +87,7 @@ const ExpenseForm = ({ onCancel, onSubmit, submitButtonLabel, defaultValues }) =
           value: input.description.value,
         }}
       />
+      {isFormValid && <Text>Invalid input values. Please check your entered data!</Text>}
       <View style={styles.buttons}>
         <Button mode="flat" onPress={onCancel} style={styles.button}>
           Cancel

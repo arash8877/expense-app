@@ -3,11 +3,11 @@ import { View, Text, StyleSheet } from "react-native";
 import Input from "./Input";
 import Button from "../ui/Button";
 
-const ExpenseForm = ({ onCancel, onSubmit, submitButtonLabel }) => {
+const ExpenseForm = ({ onCancel, onSubmit, submitButtonLabel, defaultValues }) => {
   const [inputValue, setInputValue] = useState({
-    amount: "",
-    date: "",
-    description: "",
+    amount: defaultValues ? defaultValues.amount.toString() : '',
+    date: defaultValues ? defaultValues.date.toISOString().slice(0, 10) : '',
+    description: defaultValues? defaultValues.description : '' ,
   });
 
   const inputChangeHandler = (inputIdentifier, enteredValue) => {
@@ -18,6 +18,8 @@ const ExpenseForm = ({ onCancel, onSubmit, submitButtonLabel }) => {
       };
     });
   };
+
+  console.log(defaultValues)
 
   const submitHandler = () => {
     const expenseData = {

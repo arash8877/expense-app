@@ -88,5 +88,6 @@ export const ExpensesContextProvider = ({ children }) => {
     updateExpense: updateExpense
   }
 
+
   return <ExpensesContext.Provider value={value}>{children}</ExpensesContext.Provider>;
 };

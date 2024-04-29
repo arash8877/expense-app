@@ -29,3 +29,14 @@ export const getExpenses = async () => {
     console.log(error);
   }
 };
+
+
+export const updateExpense = async(id, expenseData) => {
+   const response = await axios.put(`${baseUrl}/expenses/${id}.json`, expenseData);
+   return response;
+}
+
+
+export const deleteExpense = (id) => {
+  return axios.delete(`${baseUrl}/expenses/${id}.json`);
+}

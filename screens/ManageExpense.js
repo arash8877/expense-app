@@ -5,7 +5,7 @@ import { GlobalStyles } from "../constants/styles";
 import Button from "../components/ui/Button";
 import { ExpensesContext } from "../store/expenses-context";
 import ExpenseForm from "../components/manageExpense/ExpenseForm";
-import { storeExpense } from "../util/http";
+import { storeExpense, updateExpense, deleteExpense } from "../util/http";
 
 const ManageExpense = ({ route, navigation }) => {
   const editedExpenseId = route.params?.expenseId;
@@ -25,8 +25,9 @@ const ManageExpense = ({ route, navigation }) => {
     });
   }, [navigation, isEditing]);
 
-  function deleteExpenseHandler() {
-    expenseCtx.deleteExpense(editedExpenseId);
+  async function deleteExpenseHandler() {
+    expenseCtx.deleteExpense(editedExpenseId); //deleting locally
+    await deleteExpense(editedExpenseId); //deleting in database
     navigation.goBack();
   }
 
@@ -36,7 +37,8 @@ const ManageExpense = ({ route, navigation }) => {
 
   async function confirmHandler(expenseData) {
     if (isEditing) {
-      expenseCtx.updateExpense(editedExpenseId, expenseData);
+      expenseCtx.updateExpense(editedExpenseId, expenseData); //updating locally
+      await updateExpense(editedExpenseId, expenseData);//updating in database
     } else {
       const id = await storeExpense(expenseData); // axios.post
       expenseCtx.addExpense({...expenseData, id: id});

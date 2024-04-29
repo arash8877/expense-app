@@ -7,9 +7,11 @@ import { ExpensesContext } from "../store/expenses-context";
 import ExpenseForm from "../components/manageExpense/ExpenseForm";
 import { storeExpense, updateExpense, deleteExpense } from "../util/http";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
+import ErrorOverlay from "../components/ui/ErrorOverlay";
 
 const ManageExpense = ({ route, navigation }) => {
   const [isSubmitting, setIsSubmitting] = useState(false); // to create loading spinner
+  const [error, setError] = useState();
   const editedExpenseId = route.params?.expenseId;
   const isEditing = !!editedExpenseId; //Convert expenseId to boolean
   const expenseCtx = useContext(ExpensesContext);
@@ -17,8 +19,6 @@ const ManageExpense = ({ route, navigation }) => {
   const selectedExpense = expenseCtx.expenses.find(
     (expense) => expense.id === editedExpenseId
   );
-
-
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -29,9 +29,14 @@ const ManageExpense = ({ route, navigation }) => {
 
   async function deleteExpenseHandler() {
     setIsSubmitting(true);
-    expenseCtx.deleteExpense(editedExpenseId); //deleting locally
-    await deleteExpense(editedExpenseId); //deleting in database
-    navigation.goBack();
+    try {
+      await deleteExpense(editedExpenseId); //deleting in database
+      expenseCtx.deleteExpense(editedExpenseId); //deleting locally
+      navigation.goBack();
+    } catch (error) {
+      setError("Could not delete expense. Please try again later!");
+      setIsSubmitting(false);
+    }
   }
 
   function cancelHandler() {
@@ -40,18 +45,27 @@ const ManageExpense = ({ route, navigation }) => {
 
   async function confirmHandler(expenseData) {
     setIsSubmitting(true);
-    if (isEditing) {
-      expenseCtx.updateExpense(editedExpenseId, expenseData); //updating locally
-      await updateExpense(editedExpenseId, expenseData);//updating in database
-    } else {
-      const id = await storeExpense(expenseData); // axios.post
-      expenseCtx.addExpense({...expenseData, id: id});
+    try {
+      if (isEditing) {
+        expenseCtx.updateExpense(editedExpenseId, expenseData); //updating locally
+        await updateExpense(editedExpenseId, expenseData); //updating in database
+      } else {
+        const id = await storeExpense(expenseData); // axios.post
+        expenseCtx.addExpense({ ...expenseData, id: id });
+      }
+      navigation.goBack();
+    } catch (error) {
+      setError("Could not save data. Please try again later!");
+      setIsSubmitting(false);
     }
-    navigation.goBack();
+  }
+
+  if (error && !isSubmitting) {
+    return <ErrorOverlay message={error} />;
   }
 
   if (isSubmitting) {
-    return <LoadingOverlay/>;
+    return <LoadingOverlay />;
   }
 
   return (

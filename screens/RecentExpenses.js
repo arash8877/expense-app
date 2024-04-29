@@ -6,22 +6,36 @@ import { ExpensesContext } from "../store/expenses-context";
 import { getDateMinusDays } from "../util/date";
 import { getExpenses } from "../util/http";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
+import ErrorOverlay from "../components/ui/ErrorOverlay";
 
 const RecentExpenses = () => {
   const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState();
   const expenseCtx = useContext(ExpensesContext);
   // const [fetchExpenses, setFetchExpenses] = useState([]);
 
   useEffect(() => {
     async function receiveExpenses() {
       setIsFetching(true);
-      const expenses = await getExpenses();
+      try {
+        const expenses = await getExpenses();
+        expenseCtx.setExpenses(expenses);
+      } catch (error) {
+        setError("could not fetch expenses!");
+      }
       setIsFetching(false);
-      // setFetchExpenses(expenses);
-      expenseCtx.setExpenses(expenses);
     }
     receiveExpenses();
   }, []);
+
+
+  if (error && !isFetching) {
+    return <ErrorOverlay message={error} />;
+  }
+
+  if (isFetching) {
+    return <LoadingOverlay />;
+  }
 
   const recentExpenses = expenseCtx.expenses.filter((expense) => {
     const today = new Date();
@@ -29,10 +43,6 @@ const RecentExpenses = () => {
     return expense.date > past7Days;
   });
 
-  if (isFetching) {
-    return <LoadingOverlay />;
-  }
-  
   return (
     <ExpensesOutput
       expenses={recentExpenses}
